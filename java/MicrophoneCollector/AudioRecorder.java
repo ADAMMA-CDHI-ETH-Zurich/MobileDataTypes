@@ -21,18 +21,15 @@ import java.util.Vector;
 import JavaCLAIDDataTypes.AudioData;
 
 /**
- * Class managing the continuous recording and classification of audio from the microphone.
- * Audio is recorded in a separate thread and stored in a RingBuffer.
- * Depending on the classifciation mode, the recorded audio is classified continuously or
- * after the recording has stopped using a registered audio classifier with data from the RingBuffer.
+ * Class managing the continuous recording  of audio from the microphone.
  */
 public class AudioRecorder
 {
     // We only support MONO for now.
-    private final int recorderChannels = AudioFormat.CHANNEL_IN_MONO;
+    private int recorderChannels = AudioFormat.CHANNEL_IN_MONO;
 
     // We only support PCM_FLOAT for now.
-    private final int recorderAudioEncoding = AudioFormat.ENCODING_PCM_FLOAT;
+    private int recorderAudioEncoding = AudioFormat.ENCODING_PCM_FLOAT;
 
 
     private int sampleRate = 44100;
@@ -53,9 +50,11 @@ public class AudioRecorder
         return secondsToRecord * this.sampleRate * 4;
     }
 
-    AudioRecorder(int sampleRate)
+    AudioRecorder(int sampleRate, int recorderChannels, int recorderAudioEncoding)
     {
         this.sampleRate = sampleRate;
+        this.recorderChannels = recorderChannels;
+        this.recorderAudioEncoding = recorderAudioEncoding;
     }
 
     @SuppressLint("MissingPermission")

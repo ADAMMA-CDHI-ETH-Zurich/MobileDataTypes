@@ -3,6 +3,7 @@ package BatteryCollector;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import JavaCLAID.CLAID;
 import JavaCLAID.Channel;
@@ -10,42 +11,30 @@ import JavaCLAID.ChannelData;
 import JavaCLAID.Module;
 import JavaCLAID.Reflector;
 import JavaCLAIDDataTypes.BatteryData;
-import JavaCLAIDDataTypes.Request;
+import JavaCLAIDDataTypes.PeriodicValue;
 
 public class BatteryCollector extends Module
 {
     private Channel<BatteryData> batteryDataChannel;
-    private Channel<Request> batteryRequestsChannel;
 
-    private final String DATA_IDENTIFIER = "BatteryData";
-    String outputChannel = DATA_IDENTIFIER;
+    PeriodicValue periodicMonitoring = new PeriodicValue();
+
+    String outputChannel = "";
 
     public void initialize()
     {
-        System.out.println("Calling init of BatteryCollector");
+        System.out.println("Calling init of BatteryCollector " + outputChannel);
         this.batteryDataChannel = this.publish(BatteryData.class, this.outputChannel);
-        this.batteryRequestsChannel = this.subscribe(Request.class, "Requests", r -> onBatteryDataRequested(r));
+
+        this.registerPeriodicFunction("PeriodicBatteryMonitoring", () -> postBatteryData(), periodicMonitoring.getPeriodInMilliSeconds());
         System.out.println("BatteryCollector initialized");
     }
 
     public void reflect(Reflector r)
     {
-        r.reflectWithDefaultValue("outputChannel", this.outputChannel, DATA_IDENTIFIER);
-
+        r.reflect("outputChannel", this.outputChannel);
+        r.reflect("PeriodicMonitoring", this.periodicMonitoring);
     }
-
-    public void onBatteryDataRequested(ChannelData<Request> data)
-    {
-        System.out.println("On request in battery");
-        Request request = data.value();
-
-        if(request.get_dataIdentifier().equals(DATA_IDENTIFIER))
-        {
-            System.out.println("BatteryData requested");
-            this.postBatteryData();
-        }
-    }
-
 
     public void postBatteryData()
     {

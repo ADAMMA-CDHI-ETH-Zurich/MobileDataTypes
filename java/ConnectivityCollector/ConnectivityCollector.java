@@ -14,13 +14,12 @@ import JavaCLAID.CLAID;
 import JavaCLAID.Channel;
 import JavaCLAID.ChannelData;
 import JavaCLAID.Module;
-import JavaCLAIDDataTypes.Request;
 import JavaCLAIDDataTypes.ConnectivityData;
 
 public class ConnectivityCollector extends Module
 {
     private Channel<ConnectivityData> connectivityDataChannel;
-    private Channel<Request> connectivityRequestsChannel;
+   // private Channel<Request> connectivityRequestsChannel;
 
     private final String DATA_IDENTIFIER = "ConnectivityData";
 
@@ -28,11 +27,11 @@ public class ConnectivityCollector extends Module
     {
         System.out.println("Calling init of BatteryCollector");
         this.connectivityDataChannel = this.publish(ConnectivityData.class, DATA_IDENTIFIER);
-        this.connectivityRequestsChannel = this.subscribe(Request.class, "Requests", r -> onConnectivityDataRequested(r));
+      //  this.connectivityRequestsChannel = this.subscribe(Request.class, "Requests", r -> onConnectivityDataRequested(r));
         System.out.println("BatteryCollector initialized");
     }
 
-    public void onConnectivityDataRequested(ChannelData<Request> data)
+  /* public void onConnectivityDataRequested(ChannelData<Request> data)
     {
         Request request = data.value();
 
@@ -41,7 +40,7 @@ public class ConnectivityCollector extends Module
             System.out.println("ConnectivityData requested");
             this.postConnectivityData();
         }
-    }
+    }*/
 
 
     public void postConnectivityData()
@@ -83,12 +82,5 @@ public class ConnectivityCollector extends Module
     }
 
 
-    private short getBatteryLevel(Intent batteryStatus)
-    {
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        short batteryLevel = (short) (level * 100 / (float)scale);
-        return batteryLevel;
-    }
 
 }

@@ -12,23 +12,20 @@ import JavaCLAID.Channel;
 import JavaCLAID.ChannelData;
 import JavaCLAID.Module;
 import JavaCLAIDDataTypes.LocationData;
-import JavaCLAIDDataTypes.Request;
 
 public class LocationCollector extends Module {
     private Channel<LocationData> locationDataChannel;
-    private Channel<Request> locationRequestsChannel;
     private Location lastLocation = new Location("invalid");
 
     public void initialize() {
         System.out.println("Calling init of LocationCollector");
         new LocationPermission().blockingRequest();
-        this.locationRequestsChannel = this.subscribe(Request.class, "Requests", "onLocationDataRequested");
         this.locationDataChannel = this.publish(LocationData.class, "LocationData");
         System.out.println("LocationCollector initialized");
     }
 
 
-    public void onLocationDataRequested(ChannelData<Request> data)
+   /* public void onLocationDataRequested(ChannelData<Request> data)
     {
         Request request = data.value();
 
@@ -37,7 +34,7 @@ public class LocationCollector extends Module {
             System.out.println("Requested LocationData request");
             updateLocationData();
         }
-    }
+    }*/
 
     @SuppressLint("MissingPermission")
     public void updateLocationData()

@@ -14,13 +14,11 @@ import JavaCLAID.ChannelData;
 import JavaCLAID.Module;
 import JavaCLAID.Channel;
 import JavaCLAIDDataTypes.AccelerometerSample;
-import JavaCLAIDDataTypes.Request;
 import JavaCLAIDDataTypes.AccelerometerData;
 
 
 public class AccelerometerCollector extends Module implements SensorEventListener {
     private Channel<AccelerometerSample> accelerometerDataChannel;
-    private Channel<Request> accelerometerRequestChannel;
 
 
     private ReentrantLock mutex = new ReentrantLock();
@@ -38,7 +36,6 @@ public class AccelerometerCollector extends Module implements SensorEventListene
     public void initialize()
     {
         System.out.println("Calling init of AccelerometerCollector");
-        this.accelerometerRequestChannel = this.subscribe(Request.class, "Requests", r -> onAccelerometerDataRequested(r));
         this.accelerometerDataChannel = this.publish(AccelerometerSample.class, "AccelerometerData");
         Context context = (Context) CLAID.getContext();
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);  // Will be CLAID.getContext()
@@ -48,7 +45,7 @@ public class AccelerometerCollector extends Module implements SensorEventListene
     }
 
 
-    public synchronized void onAccelerometerDataRequested(ChannelData<Request> data)
+    /*public synchronized void onAccelerometerDataRequested(ChannelData<Request> data)
     {
         Request request = data.value();
         System.out.println("Got request " + request.get_dataIdentifier());
@@ -62,7 +59,7 @@ public class AccelerometerCollector extends Module implements SensorEventListene
             accelerometerDataChannel.post(lastSample.get());
             lastSample.set(new AccelerometerSample());
         }
-    }
+    }*/
 
 
     @Override
